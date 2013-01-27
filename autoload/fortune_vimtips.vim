@@ -6,6 +6,9 @@ let s:fortunestr = join(s:fortunes, "\n")
 let s:fortunes = split(s:fortunestr, "\n%\n")
 
 function! fortune_vimtips#viewtips()
+    " Add a map to close more easy the window
+    silent! nmap <unique> <silent> <Leader>o :only<CR>
+
     let win_nr = bufwinnr("vimtips.~")
 
     if win_nr == -1
@@ -23,10 +26,16 @@ function! fortune_vimtips#viewtips()
     endif
 
     silent exec append(0, 'Did you know ?')
-    let fortune = localtime() % s:fortunecount
-    silent exec append(1, split(get(s:fortunes, fortune), "\n"))
+    silent exec append(1, split(get(s:fortunes, GetFortune()), "\n"))
     call cursor(1,1)
 
     silent exec win_restore . "wincmd w"
+endfunction
 
+function! fortune_vimtips#tooltipviewtips()
+    return 'Did you know ?' . "\n" . get(s:fortunes, GetFortune())
+endfunction
+
+function! GetFortune()
+    return localtime() % s:fortunecount
 endfunction
